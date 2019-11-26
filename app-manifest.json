@@ -1,0 +1,12 @@
+{
+  "name": "BookStore",
+  "short_name": "BookStore",
+  "theme_color": "#9358c1",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "Scope": ".",
+  "start_url": "index.html",
+  "icons": null,
+  "splash_pages": null
+}
