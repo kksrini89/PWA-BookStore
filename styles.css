@@ -1,3 +1,4 @@
+/* Header */
 .navbar-brand .logo {
   width: 50px;
   max-height: 3rem;
@@ -5,4 +6,25 @@
 
 .buttons > .navbar-item {
   margin-right: 10px;
+}
+
+/* Main content */
+.filters-area {
+  padding: 25px;
+}
+
+.filters-area > .category-filter {
+  margin-right: 20px;
+}
+
+.filters-area > .category-filter button {
+  border: transparent;
+}
+
+.filters-area > .publishers-filter button {
+  border: transparent;
+}
+
+.books-area {
+  margin: 0 25px;
 }
