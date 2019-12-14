@@ -9,22 +9,127 @@
 }
 
 /* Main content */
-.filters-area {
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content > .filters-area {
   padding: 25px;
 }
 
-.filters-area > .category-filter {
+.filters-area > .filter-types .category-filter {
   margin-right: 20px;
 }
 
-.filters-area > .category-filter button {
+.filters-area > .filter-types .category-filter button {
   border: transparent;
 }
 
-.filters-area > .publishers-filter button {
+.filters-area > .filter-types .publishers-filter button {
   border: transparent;
 }
 
-.books-area {
+.filters-area > .applied-filter {
+  /* display: none; */
+  max-width: 80%;
+  white-space: nowrap;
+}
+
+.filters-area > .applied-filter div {
+  display: inline-block;
+}
+
+.filters-area > .applied-filter div > span:nth-last-child() {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  margin-left: 8px;
+}
+
+/* Books */
+.main-content > .books-area {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0 25px;
+}
+
+.main-content > .books-area .book-info {
+  padding: 20px 15px;
+  transition: box-shadow 0.3s;
+}
+
+.main-content > .books-area .book-info:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.main-content > .books-area .book-info .book-figure {
+  height: 200px;
+  width: 200px;
+}
+
+.main-content > .books-area .book-info .book-figure > .book-image {
+  border-radius: 20px;
+}
+
+.main-content > .books-area > .book-info > .book-meta {
+  margin: 10px;
+  text-align: center;
+}
+
+/* Media Queries */
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+  /* CSS */
+}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* CSS */
+}
+
+/* 
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* CSS */
+}
+
+/* 
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* CSS */
+}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+  /* CSS */
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  /* CSS */
 }
