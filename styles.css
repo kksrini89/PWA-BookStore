@@ -58,7 +58,7 @@
 }
 
 .main-content > .books-area .book-info {
-  width: 200px;
+  width: 225px;
   margin: 10px 10px;
   padding: 15px 15px;
   transition: box-shadow 0.3s;
@@ -68,10 +68,10 @@
   box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 }
 
-.main-content > .books-area .book-info .book-figure {
+/* .main-content > .books-area .book-info .book-figure { */
   /* height: 100%; */
   /* width: 200px; */
-}
+/* } */
 
 .main-content > .books-area .book-info .book-figure > .book-image {
   border-radius: 20px;
@@ -82,6 +82,13 @@
 }
 
 .main-content > .books-area > .book-info > .book-meta .book-name {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main-content > .books-area > .book-info > .book-meta .book-author {
   text-align: center;
   white-space: nowrap;
   overflow: hidden;

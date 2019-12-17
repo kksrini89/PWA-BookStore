@@ -13,28 +13,38 @@ const applied_filter_tmpl = `<div>
 </div>`;
 
 const book = {
+  book_list: [],
   async populate() {
     const containerElement = document.querySelector(".books-area");
-
-    const isbns = await Promise.all(
-      isbn_list.map(book =>
-        this.getBookCover(book).then(({ items }) => items[0].volumeInfo)
-      )
-    );
-    console.log(isbns);
-    isbns.forEach(book => {
+    for (const [i, isbn] of isbn_list.entries()) {
+      setTimeout(() => {
+        this.getBookCover(isbn).then(({ items }) => {
+          console.log(items);
+          if (items && items.length && items[0].volumeInfo) {
+            const bookInfoElement = this.createBookInfoElement(items[0].volumeInfo);
+            this.book_list.push(items[0].volumeInfo);
+            containerElement.append(bookInfoElement);
+          }
+        });
+      }, i * 1000);
+    }
+  },
+  createBookInfoElement(book = null) {
+    if (book) {
       const book_info_tmpl = `<figure class="image book-figure">
         <image class="book-image" src=${book.imageLinks.thumbnail}></image>
       </figure>
       <div class="book-meta">
         <div class="book-name" title=${book.title}>${book.title}</div>
-        <div class="book-author" title=${book.authors.join(',')}>${book.authors.join(',')}</div>
+        <div class="book-author" title=${book.authors.join(
+          ","
+        )}>${book.authors.join(",")}</div>
       </div>`;
       const bookInfoElement = document.createElement("div");
       bookInfoElement.classList.add("book-info");
       bookInfoElement.innerHTML = book_info_tmpl;
-      containerElement.append(bookInfoElement);
-    });
+      return bookInfoElement;
+    }
   },
   getBookCover(isbn) {
     return fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`, {
