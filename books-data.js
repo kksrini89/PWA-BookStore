@@ -1,4 +1,4 @@
-const books = [
+export const books = [
   {
     title: "So good they can't ignore you",
     short_note:
