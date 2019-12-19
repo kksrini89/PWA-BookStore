@@ -13,32 +13,37 @@ const applied_filter_tmpl = `<div>
 </div>`;
 
 const book = {
+  url: `https://api.itbook.store/1.0`,
+  proxy_url: `https://cors-anywhere.herokuapp.com`,
+  query: "javascript",
+  page_no: 1,
   book_list: [],
+  publisher_list: [],
   async populate() {
     const containerElement = document.querySelector(".books-area");
-    for (const [i, isbn] of isbn_list.entries()) {
-      setTimeout(() => {
-        this.getBookCover(isbn).then(({ items }) => {
-          console.log(items);
-          if (items && items.length && items[0].volumeInfo) {
-            const bookInfoElement = this.createBookInfoElement(items[0].volumeInfo);
-            this.book_list.push(items[0].volumeInfo);
-            containerElement.append(bookInfoElement);
-          }
-        });
-      }, i * 1000);
-    }
+    this.searchWithQuery().then(async ({ books }) => {
+      console.log(books);
+      if (books && books.length) {
+        for (const book_info of books) {
+          const bookResult = await this.getBookByIsbn(book_info.isbn13);
+          this.publisher_list.push(bookResult.publisher);
+          const bookInfoElement = this.createBookInfoElement(book_info);
+          this.book_list.push(book_info);
+          containerElement.append(bookInfoElement);
+        }
+        console.log(this.publisher_list);
+        
+      }
+    });
   },
   createBookInfoElement(book = null) {
     if (book) {
       const book_info_tmpl = `<figure class="image book-figure">
-        <image class="book-image" src=${book.imageLinks.thumbnail}></image>
+        <image class="book-image" src=${book.image}></image>
       </figure>
       <div class="book-meta">
         <div class="book-name" title=${book.title}>${book.title}</div>
-        <div class="book-author" title=${book.authors.join(
-          ","
-        )}>${book.authors.join(",")}</div>
+        <div class="book-author" title=${book.subtitle}>${book.subtitle}</div>
       </div>`;
       const bookInfoElement = document.createElement("div");
       bookInfoElement.classList.add("book-info");
@@ -46,10 +51,16 @@ const book = {
       return bookInfoElement;
     }
   },
-  getBookCover(isbn) {
-    return fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`, {
-      method: "GET"
-    }).then(d => d.json());
+  searchWithQuery() {
+    const proxy_url = `https://cors-anywhere.herokuapp.com/`;
+    return fetch(`${this.proxy_url}/${this.url}/search/${this.query}/${this.page_no}`).then(
+      data => {
+        return data.json();
+      }
+    );
+  },
+  getBookByIsbn(isbn) {
+    return fetch(`${this.proxy_url}/${this.url}/books/${isbn}`).then(d => d.json());
   }
 };
 
