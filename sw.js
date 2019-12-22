@@ -1,4 +1,4 @@
-const version = "1.0";
+const version = "1.1";
 const static_assets = [
   "index.html",
   "main.js",
@@ -26,8 +26,20 @@ self.addEventListener("activate", e => {
   e.waitUntil(cleanedPromise);
 });
 
-self.addEventListener('fetch', (e) => {
+self.addEventListener("fetch", e => {
   if (e.request.url === location.origin) {
     e.respondWith(caches.match(e.request));
+  } else if (e.request.url.match("cors-anywhere.herokuapp.com/https://api.itbook.store/1.0")) {
+    e.respondWith(
+      caches.match(e.request).then(res => {
+        if (res) return res;
+        return fetch(e.request).then(newRes => {
+          caches
+            .open(`books-api-${version}`)
+            .then(cache => cache.put(e.request, newRes));
+          return newRes.clone();
+        });
+      })
+    );
   }
-})
+});

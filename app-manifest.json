@@ -7,6 +7,12 @@
   "orientation": "portrait",
   "Scope": ".",
   "start_url": "index.html",
-  "icons": null,
+  "icons": [
+    {
+      "type": "",
+      "src": "",
+      "sizes": ""
+    }
+  ],
   "splash_pages": null
 }
