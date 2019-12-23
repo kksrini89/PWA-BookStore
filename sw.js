@@ -1,4 +1,4 @@
-const version = "1.1";
+const version = "1.2";
 const static_assets = [
   "index.html",
   "main.js",
@@ -29,7 +29,7 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   if (e.request.url === location.origin) {
     e.respondWith(caches.match(e.request));
-  } else if (e.request.url.match("cors-anywhere.herokuapp.com/https://api.itbook.store/1.0")) {
+  } else if (e.request.url.indexOf('api.itbook.store/1.0')) {
     e.respondWith(
       caches.match(e.request).then(res => {
         if (res) return res;
