@@ -30,6 +30,8 @@ const book = {
         }
       }
       console.log(this.publisher_list);
+      // To fill publishers dropdown values
+      populatePublisher([...new Set(this.publisher_list)]);
     }
   }
 };
