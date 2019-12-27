@@ -1,6 +1,6 @@
 import { books } from "./books-data.js";
 import { populatePublisher, populateBook } from "./lib.js";
-import { searchWithQuery, getBookByIsbn } from "./api.js";
+import { getNewBooks, searchWithQuery, getBookByIsbn } from "./api.js";
 
 if (navigator.serviceWorker) {
   navigator.serviceWorker
@@ -15,7 +15,8 @@ const book = {
   book_list: [],
   publisher_list: [],
   async populate() {
-    const { books } = await searchWithQuery(this.query, this.page_no);
+    // const { books } = await searchWithQuery(this.query, this.page_no);
+    const { books } = await getNewBooks();
     console.log(books);
     if (books && books.length) {
       for (const book_info of books) {

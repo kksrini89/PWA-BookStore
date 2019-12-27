@@ -11,7 +11,7 @@ export function populatePublisher(names) {
   );
   const content = document.createElement("div");
   content.classList.add("dropdown-content");
-  Array.of(names).forEach(val => {
+  names.forEach(val => {
     if (!!val) {
       content.append(createPublisherElement(val));
     }

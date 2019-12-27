@@ -1,4 +1,6 @@
 const version = "1.2";
+const static_cache_name = `static-${version}`;
+const new_books_api = `new-books-api-${version}`;
 const static_assets = [
   "index.html",
   "main.js",
@@ -6,9 +8,22 @@ const static_assets = [
   "app/assets/images/logo.png"
 ];
 
+// Try network first, if failure then try with cache option.
+const FallbackToCache = req => {
+  return fetch(e.request)
+    .then(newRes => {
+      if (!newRes.ok) throw "Fetch failure";
+
+      // Update cache with latest api result
+      caches.open(new_books_api).then(cache => cache.put(req, newRes));
+      return newRes.clone();
+    })
+    .catch(caches.match(req));
+};
+
 // Install
 self.addEventListener("install", e => {
-  let cached_promise = caches.open(`static-${version}`).then(cache => {
+  let cached_promise = caches.open(static_cache_name).then(cache => {
     return cache.addAll(static_assets);
   });
   e.waitUntil(cached_promise);
@@ -18,7 +33,7 @@ self.addEventListener("install", e => {
 self.addEventListener("activate", e => {
   let cleanedPromise = caches.keys().then(keys => {
     keys.forEach(key => {
-      if (key !== `static-${version}` && key.match("static-")) {
+      if (key !== static_cache_name && key.match("static-")) {
         return caches.delete(key);
       }
     });
@@ -29,17 +44,7 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   if (e.request.url === location.origin) {
     e.respondWith(caches.match(e.request));
-  } else if (e.request.url.indexOf('api.itbook.store/1.0')) {
-    e.respondWith(
-      caches.match(e.request).then(res => {
-        if (res) return res;
-        return fetch(e.request).then(newRes => {
-          caches
-            .open(`books-api-${version}`)
-            .then(cache => cache.put(e.request, newRes));
-          return newRes.clone();
-        });
-      })
-    );
+  } else if (e.request.url.indexOf("api.itbook.store/1.0")) {
+    e.respondWith(FallbackToCache);
   }
 });

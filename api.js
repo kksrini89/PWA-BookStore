@@ -7,6 +7,10 @@ export function searchWithQuery(query = "javascript", page_no = 1) {
   );
 }
 
+export function getNewBooks() {
+  return fetch(`${proxy_url}/${url}/new`).then(data => data.json());
+}
+
 export function getBookByIsbn(isbn) {
   return fetch(`${proxy_url}/${url}/books/${isbn}`).then(d => d.json());
 }
