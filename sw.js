@@ -1,4 +1,4 @@
-const version = "1.2";
+const version = "1.0";
 const static_cache_name = `static-${version}`;
 const new_books_api = `new-books-api-${version}`;
 const static_assets = [
@@ -46,5 +46,7 @@ self.addEventListener("fetch", e => {
     e.respondWith(caches.match(e.request));
   } else if (e.request.url.indexOf("api.itbook.store/1.0")) {
     e.respondWith(FallbackToCache);
+  } else if (e.request.url.indexOf("")) {
+    e.respondWith(caches.open(static_cache_name).then());
   }
 });

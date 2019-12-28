@@ -1,3 +1,5 @@
+import { getNewBooks } from "./api.js";
+
 const containerElement = document.querySelector(".books-area");
 const applied_filter_tmpl = `<div>
 <span class="close">X</span>
@@ -29,12 +31,29 @@ export function populateBook(book_info) {
   }
 }
 
+export function filterByPublisher(publisher = null) {
+  if (publisher) {
+    // clear books area container
+    containerElement.innerHTML = "";
+    getNewBooks().then(books => {
+      if (books && books.length) {
+        for (const book of books) {
+          if (book.publisher.toLowerCase() === publisher.toLowerCase()) {
+            populateBook(book);
+          }
+        }
+      }
+    });
+  }
+}
+
 function createPublisherElement(name) {
   if (name) {
     const anchorTag = document.createElement("a");
     anchorTag.classList.add("dropdown-item");
     anchorTag.setAttribute("href", "#");
     anchorTag.text = name;
+    anchorTag.onclick = selectPublisher;
     return anchorTag;
   }
   //   return (
@@ -59,4 +78,20 @@ function createBookInfoElement(book = null) {
     bookInfoElement.innerHTML = book_info_tmpl;
     return bookInfoElement;
   }
+}
+
+function selectPublisher(event) {
+  event.preventDefault();
+  console.log(this.text);
+
+  // Reset already selected option
+  const menuItems = document.querySelectorAll(
+    ".publishers-filter a.dropdown-item"
+  );
+  menuItems.forEach(item => item.classList.remove("is-active"));
+
+  // add highlight option
+  this.classList.add("is-active");
+
+  filterByPublisher(this.text);
 }

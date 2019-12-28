@@ -1,4 +1,4 @@
-import { books } from "./books-data.js";
+// import { books } from "./books-data.js";
 import { populatePublisher, populateBook } from "./lib.js";
 import { getNewBooks, searchWithQuery, getBookByIsbn } from "./api.js";
 
@@ -15,10 +15,14 @@ const book = {
   book_list: [],
   publisher_list: [],
   async populate() {
+    // clear the books area
+    document.querySelector('.books-area').innerHTML = '';
+
     // const { books } = await searchWithQuery(this.query, this.page_no);
     const { books } = await getNewBooks();
     console.log(books);
     if (books && books.length) {
+      this.book_list = books;
       for (const book_info of books) {
         if (book_info) {
           // GET Book Meta Data Info
@@ -26,8 +30,8 @@ const book = {
           this.publisher_list.push(bookResult.publisher);
 
           // To populate book area
-          populateBook(book_info);
-          this.book_list.push(book_info);
+          populateBook(bookResult);
+          // this.book_list.push(book_info);
         }
       }
       console.log(this.publisher_list);
