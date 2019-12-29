@@ -1,4 +1,4 @@
-const version = "1.0";
+const version = "1.2";
 const static_cache_name = `static-${version}`;
 const new_books_api = `new-books-api-${version}`;
 const static_assets = [
@@ -8,9 +8,25 @@ const static_assets = [
   "app/assets/images/logo.png"
 ];
 
+/**
+ * To clean old cached book images
+ * @param {string[]} imgs
+ */
+const cleanBookAPIImages = imgs => {
+  caches.open(new_books_api).then(cache => {
+    cache.keys().then(key => {
+      key.forEach(item => {
+        if (!imgs.includes(item.url)) {
+          cache.delete(item);
+        }
+      });
+    });
+  });
+};
+
 // Try network first, if failure then try with cache option.
 const FallbackToCache = req => {
-  return fetch(e.request)
+  return fetch(req)
     .then(newRes => {
       if (!newRes.ok) throw "Fetch failure";
 
@@ -19,6 +35,18 @@ const FallbackToCache = req => {
       return newRes.clone();
     })
     .catch(caches.match(req));
+};
+
+// Try cache first, if not found then try with network request.
+const staticCache = req => {
+  return caches.match(req).then(cache => {
+    if (cache) return cache;
+
+    return fetch(req).then(res => {
+      caches.open(static_cache_name).then(cache => cache.put(req, res));
+      return res.clone();
+    });
+  });
 };
 
 // Install
@@ -42,11 +70,22 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
-  if (e.request.url === location.origin) {
-    e.respondWith(caches.match(e.request));
-  } else if (e.request.url.indexOf("api.itbook.store/1.0")) {
-    e.respondWith(FallbackToCache);
-  } else if (e.request.url.indexOf("")) {
-    e.respondWith(caches.open(static_cache_name).then());
+  // App shell
+  if (e.request.url.match(location.origin)) {
+    // Resources will be retrieved over network, even if cached files are deleted by user either intentionally or accidentally,
+    e.respondWith(staticCache(e.request));
+  } else if (e.request.url.indexOf("api.itbook.store/1.0/new")) {
+    // API retrieval
+    e.respondWith(FallbackToCache(e.request));
+  } else if (e.request.url.indexOf("itbook.store/img/books")) {
+    // Caching image retrieval
+    e.respondWith(staticCache(e.request));
+  }
+});
+
+// To interact from main.js to sw.js
+self.addEventListener("message", e => {
+  if (e.data.action === "cleanBookImages") {
+    cleanBookAPIImages(e.data.imgs);
   }
 });

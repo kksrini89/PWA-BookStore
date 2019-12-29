@@ -7,4 +7,17 @@ if (navigator.serviceWorker) {
     .catch(console.error);
 }
 
-book.populate();
+function cleanBookAPIImage(imgs) {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      reg.active.postMessage({ action: "cleanBookImages", imgs: imgs });
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  book.populate().then(() => {
+    // To clean cached book images if it's old
+    if (navigator.serviceWorker) cleanBookAPIImage(book.book_imgs);
+  });
+});
