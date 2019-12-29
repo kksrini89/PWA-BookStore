@@ -1,4 +1,5 @@
-import { getNewBooks } from "./api.js";
+// import { getNewBooks } from "./api.js";
+import book from "./book.js";
 
 const containerElement = document.querySelector(".books-area");
 const applied_filter_tmpl = `<div>
@@ -31,22 +32,30 @@ export function populateBook(book_info) {
   }
 }
 
-export function filterByPublisher(publisher = null) {
-  if (publisher) {
-    // clear books area container
-    containerElement.innerHTML = "";
-    getNewBooks().then(books => {
-      if (books && books.length) {
-        for (const book of books) {
-          if (book.publisher.toLowerCase() === publisher.toLowerCase()) {
-            populateBook(book);
-          }
-        }
-      }
-    });
-  }
+/**
+ * Publisher dropdown - On click handler
+ */
+function selectPublisher(event) {
+  event.preventDefault();
+  console.log(this.text);
+
+  // Reset already selected option
+  const menuItems = document.querySelectorAll(
+    ".publishers-filter a.dropdown-item"
+  );
+  menuItems.forEach(item => item.classList.remove("is-active"));
+
+  // add highlight option
+  this.classList.add("is-active");
+
+  filterByPublisher(this.text);
 }
 
+/**
+ * To create publisher dropdown item
+ * @param {string} name Publisher name
+ * @returns { HTMLElement }
+ */
 function createPublisherElement(name) {
   if (name) {
     const anchorTag = document.createElement("a");
@@ -64,6 +73,11 @@ function createPublisherElement(name) {
   //   );
 }
 
+/**
+ * To create book ui element
+ * @param {object} book
+ * @returns { HTMLElement }
+ */
 function createBookInfoElement(book = null) {
   if (book) {
     const book_info_tmpl = `<figure class="image book-figure">
@@ -80,18 +94,19 @@ function createBookInfoElement(book = null) {
   }
 }
 
-function selectPublisher(event) {
-  event.preventDefault();
-  console.log(this.text);
+// Utility methods
+function filterByPublisher(publisher = null) {
+  if (publisher) {
+    // clear books area container
+    containerElement.innerHTML = "";
+    const { book_list } = book;
 
-  // Reset already selected option
-  const menuItems = document.querySelectorAll(
-    ".publishers-filter a.dropdown-item"
-  );
-  menuItems.forEach(item => item.classList.remove("is-active"));
-
-  // add highlight option
-  this.classList.add("is-active");
-
-  filterByPublisher(this.text);
+    if (book_list && book_list.length) {
+      for (const book of book_list) {
+        if (book.publisher.toLowerCase() === publisher.toLowerCase()) {
+          populateBook(book);
+        }
+      }
+    }
+  }
 }
