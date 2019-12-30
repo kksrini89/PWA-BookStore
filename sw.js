@@ -12,11 +12,15 @@ const static_assets = [
  * To clean old cached book images
  * @param {string[]} imgs
  */
+// DO NOT REMOTE as it will be required later
 const cleanBookAPIImages = imgs => {
   caches.open(new_books_api).then(cache => {
     cache.keys().then(key => {
       key.forEach(item => {
-        if (!imgs.includes(item.url)) {
+        const imgUrls = item.url.split("/");
+        const imgId = imgUrls[imgUrls.length - 1];
+        // const imgName = imgNameWithExtn.split('.')[0];
+        if (!imgs.includes(imgId)) {
           cache.delete(item);
         }
       });
@@ -85,6 +89,7 @@ self.addEventListener("fetch", e => {
 
 // To interact from main.js to sw.js
 self.addEventListener("message", e => {
+  // DO NOT REMOTE as it will be required later
   if (e.data.action === "cleanBookImages") {
     cleanBookAPIImages(e.data.imgs);
   }

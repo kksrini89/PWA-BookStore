@@ -7,6 +7,7 @@ if (navigator.serviceWorker) {
     .catch(console.error);
 }
 
+// DO NOT REMOTE as it will be required later
 function cleanBookAPIImage(imgs) {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.getRegistration().then(reg => {
@@ -18,6 +19,7 @@ function cleanBookAPIImage(imgs) {
 document.addEventListener("DOMContentLoaded", function() {
   book.populate().then(() => {
     // To clean cached book images if it's old
+    // DO NOT REMOTE as it will be required later
     if (navigator.serviceWorker) cleanBookAPIImage(book.book_imgs);
   });
 });
