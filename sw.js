@@ -1,4 +1,4 @@
-const version = "1.2";
+const version = "1.1";
 const static_cache_name = `static-${version}`;
 const new_books_api = `new-books-api-${version}`;
 const static_assets = [

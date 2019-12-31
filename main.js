@@ -21,5 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // To clean cached book images if it's old
     // DO NOT REMOTE as it will be required later
     if (navigator.serviceWorker) cleanBookAPIImage(book.book_imgs);
+    book.search();
   });
 });

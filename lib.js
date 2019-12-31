@@ -1,5 +1,5 @@
-// import { getNewBooks } from "./api.js";
 import book from "./book.js";
+import { searchWithQuery, getBookByIsbn } from "./api.js";
 
 const containerElement = document.querySelector(".books-area");
 const applied_filter_tmpl = `<div>
@@ -7,8 +7,45 @@ const applied_filter_tmpl = `<div>
 <span class="filter-text"></span>
 </div>`;
 
+export function searchBook() {
+  return new Promise((resolve, reject) => {
+    const input = document.querySelector("#searchInput");
+    if (!!input.value) {
+      searchWithQuery(input.value)
+        .then(({ books }) => {
+          console.log(`[SEARCH BOOK]`);
+
+          if (books && books.length) {
+            // Reset values
+            book.book_list.length = 0;
+            book.book_imgs.length = 0;
+            book.publisher_list.length = 0;
+
+            book.book_list = books;
+            // Books area
+            clearBookContainer();
+            for (const info of books) {
+              getBookByIsbn(info.isbn13).then(data => {
+                book.book_imgs.push(data.image);
+                book.publisher_list.push(data.publisher);
+                populateBook(data);
+              });
+            }
+            // Publisher filter
+            clearPublisherDropdown();
+            populatePublisher([...new Set(book.publisher_list)]);
+            resolve(books);
+          }
+        })
+        .catch(reject);
+    } else {
+      book.populate().then(() => console.log('Received [NEW Books]'));
+    }
+  });
+}
+
 export function populatePublisher(names) {
-  // TO-DO, To populate publisher filter
+  // To populate publisher filter
   const publisherElement = document.querySelector(
     ".publishers-filter div.dropdown-menu"
   );
@@ -30,6 +67,14 @@ export function populateBook(book_info) {
     // To add book element to UI container
     containerElement.append(bookInfoElement);
   }
+}
+
+export function clearBookContainer() {
+  document.querySelector(".books-area").innerHTML = "";
+}
+
+export function clearPublisherDropdown() {
+  document.querySelector(".publishers-filter div.dropdown-menu").innerHTML = "";
 }
 
 /**
