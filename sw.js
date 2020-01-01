@@ -20,7 +20,7 @@ const cleanBookAPIImages = imgs => {
         const imgUrls = item.url.split("/");
         const imgId = imgUrls[imgUrls.length - 1];
         // const imgName = imgNameWithExtn.split('.')[0];
-        if (!imgs.includes(imgId)) {
+        if (imgs.filter(x => x.includes(imgId)).length) {
           cache.delete(item);
         }
       });
