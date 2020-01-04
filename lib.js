@@ -33,13 +33,15 @@ export function searchBook() {
             }
             // Publisher filter
             clearPublisherDropdown();
+            clearAuthorDropdown();
             populatePublisher([...new Set(book.publisher_list)]);
+            populateAuthor([...new Set(book.authors)]);
             resolve(books);
           }
         })
         .catch(reject);
     } else {
-      book.populate().then(() => console.log('Received [NEW Books]'));
+      book.populate().then(() => console.log("Received [NEW Books]"));
     }
   });
 }
@@ -59,6 +61,21 @@ export function populatePublisher(names) {
   publisherElement.append(content);
 }
 
+export function populateAuthor(names) {
+  // To populate publisher filter
+  const authorElement = document.querySelector(
+    ".authors-filter div.dropdown-menu"
+  );
+  const content = document.createElement("div");
+  content.classList.add("dropdown-content");
+  names.forEach(val => {
+    if (!!val) {
+      content.append(createAuthorElement(val));
+    }
+  });
+  authorElement.append(content);
+}
+
 export function populateBook(book_info) {
   if (book_info) {
     // To create book UI element
@@ -75,6 +92,10 @@ export function clearBookContainer() {
 
 export function clearPublisherDropdown() {
   document.querySelector(".publishers-filter div.dropdown-menu").innerHTML = "";
+}
+
+export function clearAuthorDropdown() {
+  document.querySelector(".authors-filter div.dropdown-menu").innerHTML = "";
 }
 
 /**
@@ -97,6 +118,25 @@ function selectPublisher(event) {
 }
 
 /**
+ * Publisher dropdown - On click handler
+ */
+function selectAuthor(event) {
+  event.preventDefault();
+  console.log(this.text);
+
+  // Reset already selected option
+  const menuItems = document.querySelectorAll(
+    ".authors-filter a.dropdown-item"
+  );
+  menuItems.forEach(item => item.classList.remove("is-active"));
+
+  // add highlight option
+  this.classList.add("is-active");
+
+  filterByAuthor(this.text);
+}
+
+/**
  * To create publisher dropdown item
  * @param {string} name Publisher name
  * @returns { HTMLElement }
@@ -108,6 +148,23 @@ function createPublisherElement(name) {
     anchorTag.setAttribute("href", "#");
     anchorTag.text = name;
     anchorTag.onclick = selectPublisher;
+    return anchorTag;
+  }
+  //   return (
+  //     name &&
+  //     `<a class="dropdown-item">
+  //   ${name}
+  // </a>`
+  //   );
+}
+
+function createAuthorElement(name) {
+  if (name) {
+    const anchorTag = document.createElement("a");
+    anchorTag.classList.add("dropdown-item");
+    anchorTag.setAttribute("href", "#");
+    anchorTag.text = name;
+    anchorTag.onclick = selectAuthor;
     return anchorTag;
   }
   //   return (
@@ -149,6 +206,22 @@ function filterByPublisher(publisher = null) {
     if (book_list && book_list.length) {
       for (const book of book_list) {
         if (book.publisher.toLowerCase() === publisher.toLowerCase()) {
+          populateBook(book);
+        }
+      }
+    }
+  }
+}
+
+function filterByAuthor(author = null) {
+  if (author) {
+    // clear books area container
+    containerElement.innerHTML = "";
+    const { book_list } = book;
+
+    if (book_list && book_list.length) {
+      for (const book of book_list) {
+        if (book.authors.toLowerCase() === author.toLowerCase()) {
           populateBook(book);
         }
       }

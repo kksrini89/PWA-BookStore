@@ -3,7 +3,8 @@ import {
   populateBook,
   populatePublisher,
   clearBookContainer,
-  searchBook
+  searchBook,
+  populateAuthor
 } from "./lib.js";
 
 const book = {
@@ -12,6 +13,7 @@ const book = {
   book_list: [],
   book_imgs: [],
   publisher_list: [],
+  authors: [],
   populate() {
     return new Promise(async (resolve, reject) => {
       // clear the books area
@@ -29,12 +31,14 @@ const book = {
           // Reset presaved values
           this.publisher_list.length = 0;
           this.book_imgs.length = 0;
+          this.authors.length = 0;
           this.book_list.length = 0;
 
           // GET Book Meta Data Info
           const bookResult = await getBookByIsbn(book_info.isbn13);
           this.publisher_list.push(bookResult.publisher);
           this.book_imgs.push(bookResult.image);
+          this.authors.push(bookResult.authors);
           this.book_list.push(bookResult);
 
           // To populate book area
@@ -43,6 +47,8 @@ const book = {
       }
       // To fill publishers dropdown values
       populatePublisher([...new Set(this.publisher_list)]);
+      // To fill authors dropdown values
+      populateAuthor([...new Set(this.authors)]);
       resolve(true);
       // }
     });
