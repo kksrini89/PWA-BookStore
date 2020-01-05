@@ -12,16 +12,15 @@ const static_assets = [
  * To clean old cached book images
  * @param {string[]} imgs
  */
-// DO NOT REMOTE as it will be required later
 const cleanBookAPIImages = imgs => {
-  caches.open(new_books_api).then(cache => {
+  return caches.open(new_books_api).then(cache => {
     cache.keys().then(key => {
       key.forEach(item => {
         const imgUrls = item.url.split("/");
         const imgId = imgUrls[imgUrls.length - 1];
         // const imgName = imgNameWithExtn.split('.')[0];
         if (imgs.filter(x => x.includes(imgId)).length) {
-          cache.delete(item);
+          return cache.delete(item);
         }
       });
     });

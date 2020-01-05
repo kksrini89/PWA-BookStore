@@ -20,22 +20,26 @@ export function searchBook() {
             book.book_list.length = 0;
             book.book_imgs.length = 0;
             book.publisher_list.length = 0;
+            book.authors.length = 0;
 
-            book.book_list = books;
+            // book.book_list = books;
             // Books area
             clearBookContainer();
+            clearPublisherDropdown();
+            clearAuthorDropdown();
             for (const info of books) {
               getBookByIsbn(info.isbn13).then(data => {
                 book.book_imgs.push(data.image);
                 book.publisher_list.push(data.publisher);
+                book.authors.push(data.authors);
+                book.book_list.push(data);
+
                 populateBook(data);
               });
+              populatePublisher([...new Set(book.publisher_list)]);
+              populateAuthor([...new Set(book.authors)]);
             }
             // Publisher filter
-            clearPublisherDropdown();
-            clearAuthorDropdown();
-            populatePublisher([...new Set(book.publisher_list)]);
-            populateAuthor([...new Set(book.authors)]);
             resolve(books);
           }
         })

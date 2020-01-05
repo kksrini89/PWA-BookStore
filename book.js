@@ -25,15 +25,13 @@ const book = {
       if (!books.length) {
         reject("No [NEW BOOKS] available...");
       }
-      // if (books && books.length) {
+      // Reset presaved values
+      this.publisher_list.length = 0;
+      this.book_imgs.length = 0;
+      this.authors.length = 0;
+      this.book_list.length = 0;
       for (const book_info of books) {
         if (book_info) {
-          // Reset presaved values
-          this.publisher_list.length = 0;
-          this.book_imgs.length = 0;
-          this.authors.length = 0;
-          this.book_list.length = 0;
-
           // GET Book Meta Data Info
           const bookResult = await getBookByIsbn(book_info.isbn13);
           this.publisher_list.push(bookResult.publisher);
